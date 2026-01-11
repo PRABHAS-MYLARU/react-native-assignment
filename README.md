@@ -1,4 +1,39 @@
-# Savvy Agents – React Native  Take‑Home Assignment
+# Savvy Agents – React Native Take‑Home Assignment
+
+---
+
+## 🚀 Getting Started
+
+### How to Submit
+
+1. **Fork this repository** to your own GitHub account
+2. **Clone your fork** locally
+3. **Create a new branch** from `main` (e.g., `feat/your-name-submission`)
+4. Build the app with incremental commits on your branch
+5. **Push your branch** to your forked repo
+6. **Create a Pull Request** from your branch to `main` in your fork
+
+> ⚠️ **Important**: Do NOT push directly to `main`. Always work on a feature branch and submit via Pull Request.
+
+---
+
+## 📚 Learning Resources
+
+If you're new to Git or React Native, we recommend completing these courses before starting:
+
+### Git & Version Control
+- **[Git Me Some Version Control](https://laracasts.com/series/git-me-some-version-control)** (Laracasts)
+- *YouTube Alternative*: [Git and GitHub for Beginners - Crash Course](https://www.youtube.com/watch?v=RGOj5yH7evk) (freeCodeCamp)
+
+### React Native & Expo
+- **[Build Mobile Apps with React Native and Expo](https://laracasts.com/series/build-mobile-apps-with-react-native-and-expo)** (Laracasts)
+- *YouTube Alternatives*:
+  - [React Native Tutorial for Beginners](https://www.youtube.com/watch?v=0-S5a0eXPoc) (Programming with Mosh)
+  - [React Native Crash Course](https://www.youtube.com/watch?v=VozPNrt-LfE) (Traversy Media)
+
+> 💡 If you don't have access to Laracasts, the YouTube alternatives cover the same fundamentals.
+
+---
 
 ## Overview
 
