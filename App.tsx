@@ -1,45 +1,30 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { SafeAreaView, Text, StyleSheet } from 'react-native';
+import InboxScreen from './src/screens/InboxScreen';
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.title}>✅ DENTAL INBOX READY</Text>
-        <Text style={styles.subtitle}>Setup Complete - PRABHAS</Text>
-      </View>
+      <NavigationContainer>
+        <Stack.Navigator 
+          initialRouteName="Inbox"
+          screenOptions={{
+            headerStyle: { backgroundColor: '#10B981' },
+            headerTintColor: 'white',
+            headerTitleStyle: { fontWeight: 'bold' }
+          }}
+        >
+          <Stack.Screen name="Inbox" component={InboxScreen} options={{ title: '🦷 Dental Inbox' }} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8fafc',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  card: {
-    backgroundColor: 'white',
-    padding: 40,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 4
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1e293b',
-    marginBottom: 10,
-    textAlign: 'center'
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#10B981',
-    textAlign: 'center',
-    fontWeight: '600'
-  }
+  container: { flex: 1, backgroundColor: '#f8fafc' }
 });
