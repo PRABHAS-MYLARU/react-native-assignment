@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1",
+    "patientName": "John Doe",
+    "phone": "+91-9876543210",
+    "reason": "Teeth cleaning appointment",
+    "timestamp": "Jan 15, 10:30 AM",
+    "status": "New",
+    "messages": ["Hi, I need to book teeth cleaning."],
+    "createdDate": "2026-01-15T10:00:00Z"
+  },
+  {
+    "id": "2",
+    "patientName": "Jane Smith",
+    "phone": "+91-9876543211",
+    "reason": "Root canal pain",
+    "timestamp": "Jan 16, 9:15 AM",
+    "status": "New",
+    "messages": ["Severe tooth pain, urgent help needed"],
+    "createdDate": "2026-01-16T09:00:00Z"
+  },
+  {
+    "id": "3",
+    "patientName": "Raj Patel",
+    "phone": "+91-9876543212",
+    "reason": "Braces consultation",
+    "timestamp": "Jan 14, 2:30 PM",
+    "status": "In Progress",
+    "messages": ["Interested in braces treatment"],
+    "createdDate": "2026-01-14T14:00:00Z"
+  },
+  {
+    "id": "4",
+    "patientName": "Priya Sharma",
+    "phone": "+91-9876543213",
+    "reason": "Regular checkup",
+    "timestamp": "Jan 13, 11:00 AM",
+    "status": "Done",
+    "messages": ["Routine checkup completed"],
+    "createdDate": "2026-01-13T11:00:00Z"
+  }
+]

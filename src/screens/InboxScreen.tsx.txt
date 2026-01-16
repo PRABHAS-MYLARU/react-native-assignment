@@ -1,0 +1,18 @@
+import { FlatList, View, Text, TouchableOpacity } from 'react-native';
+import data from '../data.json';
+
+export default function InboxScreen({ navigation }) {
+  const renderItem = ({ item }) => (
+    <TouchableOpacity onPress={() => navigation.navigate('Detail', { convo: item })}>
+      <View style={{ padding: 16, borderBottomWidth: 1 }}>
+        <Text>{item.patientName}</Text>
+        <Text>{item.reason}</Text>
+        <Text>{item.status}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  return (
+    <FlatList data={data} renderItem={renderItem} keyExtractor={item => item.id} />
+  );
+}

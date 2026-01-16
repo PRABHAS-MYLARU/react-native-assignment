@@ -1,0 +1,19 @@
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import InboxScreen from './src/screens/InboxScreen';
+import DetailScreen from './src/screens/DetailScreen';
+import SummaryScreen from './src/screens/SummaryScreen';
+
+const Stack = createStackNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Inbox" component={InboxScreen} />
+        <Stack.Screen name="Detail" component={DetailScreen} />
+        <Stack.Screen name="Summary" component={SummaryScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
