@@ -1,16 +1,14 @@
-import React from 'react';
-import { FlatList, View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useConversations } from '../hooks/useConversations';
-
-type RootStackParamList = {
-  Inbox: undefined;
-  Detail: { conversationId: string };
-};
-
-type Props = {
-  navigation: StackNavigationProp<RootStackParamList, 'Inbox'>;
-};
+import React, { useState, useEffect } from 'react';
+import { 
+  View, 
+  Text, 
+  FlatList, 
+  TouchableOpacity, 
+  StyleSheet,
+  Alert 
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import data from '../data.json';
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -21,15 +19,35 @@ const getStatusColor = (status: string) => {
   }
 };
 
-export default function InboxScreen({ navigation }: Props) {
-  const conversations = useConversations();
+export default function InboxScreen({ navigation }: any) {
+  const [conversations, setConversations] = useState(data);
 
-  const handlePress = (conversationId: string) => {
-    navigation.navigate('Detail', { conversationId });
+  useEffect(() => {
+    loadConversations();
+  }, []);
+
+  const loadConversations = async () => {
+    try {
+      const saved = await AsyncStorage.getItem('conversations');
+      if (saved) {
+        setConversations(JSON.parse(saved));
+      }
+    } catch (error) {
+      console.log('Load error:', error);
+    }
+  };
+
+  const handlePress = (conversation: any) => {
+    console.log('Navigating to Detail:', conversation.id);
+    navigation.navigate('Detail', { conversation });
   };
 
   const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity style={styles.item} onPress={() => handlePress(item.id)}>
+    <TouchableOpacity 
+      style={styles.item} 
+      onPress={() => handlePress(item)}
+      activeOpacity={0.7}
+    >
       <View style={styles.content}>
         <Text style={styles.patientName}>{item.patientName}</Text>
         <Text style={styles.reason}>{item.reason}</Text>
@@ -42,20 +60,28 @@ export default function InboxScreen({ navigation }: Props) {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <FlatList 
         data={conversations} 
         renderItem={renderItem} 
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8fafc' },
-  list: { padding: 16 },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#f8fafc',
+    paddingTop: 10 
+  },
+  list: { 
+    padding: 16,
+    paddingBottom: 20 
+  },
   item: {
     flexDirection: 'row',
     backgroundColor: 'white',
@@ -69,10 +95,35 @@ const styles = StyleSheet.create({
     elevation: 4,
     alignItems: 'center',
   },
-  content: { flex: 1 },
-  patientName: { fontSize: 20, fontWeight: 'bold', marginBottom: 4, color: '#1e293b' },
-  reason: { fontSize: 16, color: '#64748b', marginBottom: 4 },
-  timestamp: { fontSize: 14, color: '#94a3b8' },
-  status: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, minWidth: 90, alignItems: 'center' },
-  statusText: { color: 'white', fontSize: 12, fontWeight: 'bold', textTransform: 'uppercase' }
+  content: { 
+    flex: 1 
+  },
+  patientName: { 
+    fontSize: 20, 
+    fontWeight: 'bold', 
+    marginBottom: 4, 
+    color: '#1e293b' 
+  },
+  reason: { 
+    fontSize: 16, 
+    color: '#64748b', 
+    marginBottom: 4 
+  },
+  timestamp: { 
+    fontSize: 14, 
+    color: '#94a3b8' 
+  },
+  status: { 
+    paddingHorizontal: 16, 
+    paddingVertical: 8, 
+    borderRadius: 20, 
+    minWidth: 90, 
+    alignItems: 'center' 
+  },
+  statusText: { 
+    color: 'white', 
+    fontSize: 12, 
+    fontWeight: 'bold', 
+    textTransform: 'uppercase' 
+  }
 });
