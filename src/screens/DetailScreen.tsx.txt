@@ -1,23 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
-import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 
 type RootStackParamList = {
-  Detail: { conversation: any };
-  Summary: { conversation: any };
+  Detail: { conversationId: string };
+  Summary: { conversationId: string };
 };
 
-type DetailScreenRouteProp = RouteProp<RootStackParamList, 'Detail'>;
-type DetailScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Detail'>;
+type Props = {
+  route: RouteProp<RootStackParamList, 'Detail'>;
+};
 
-interface Props {
-  route: { params: DetailScreenRouteProp };
-  navigation: DetailScreenNavigationProp;
-}
+export default function DetailScreen({ route }: Props) {
+  const navigation = useNavigation();
+  const { conversationId } = route.params;
+  const [conversation, setConversation] = useState<any>(null);
 
-export default function DetailScreen({ route, navigation }: Props) {
-  const { conversation } = route.params;
+  useEffect(() => {
+    loadConversation();
+  }, []);
+
+  const loadConversation = async () => {
+    try {
+      const saved = await AsyncStorage.getItem('conversations');
+      const conversations = saved ? JSON.parse(saved) : require('../data.json');
+      const conv = conversations.find((c: any) => c.id === conversationId);
+      setConversation(conv);
+    } catch (error) {
+      console.log('Load conversation failed');
+    }
+  };
+
+  if (!conversation) return null;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -25,24 +40,24 @@ export default function DetailScreen({ route, navigation }: Props) {
         <View style={styles.card}>
           <Text style={styles.patientName}>{conversation.patientName}</Text>
           <View style={styles.infoRow}>
-            <Text style={styles.label}>Phone:</Text>
+            <Text style={styles.label}>📞 Phone:</Text>
             <Text style={styles.info}>{conversation.phone}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.label}>Reason:</Text>
+            <Text style={styles.label}>🎯 Reason:</Text>
             <Text style={styles.info}>{conversation.reason}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.label}>Time:</Text>
+            <Text style={styles.label}>📅 Time:</Text>
             <Text style={styles.info}>{conversation.timestamp}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.label}>Status:</Text>
+            <Text style={styles.label}>📊 Status:</Text>
             <Text style={[styles.status, { color: '#10B981' }]}>{conversation.status}</Text>
           </View>
           
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Messages:</Text>
+            <Text style={styles.sectionTitle}>💬 Messages:</Text>
             {conversation.messages.map((msg: string, index: number) => (
               <View key={index} style={styles.message}>
                 <Text style={styles.messageText}>{msg}</Text>
@@ -54,7 +69,7 @@ export default function DetailScreen({ route, navigation }: Props) {
       
       <TouchableOpacity 
         style={styles.createSummaryButton}
-        onPress={() => navigation.navigate('Summary', { conversation })}
+        onPress={() => navigation.navigate('Summary', { conversationId })}
       >
         <Text style={styles.createSummaryButtonText}>📝 Create Summary</Text>
       </TouchableOpacity>
@@ -77,17 +92,12 @@ const styles = StyleSheet.create({
   },
   patientName: { fontSize: 28, fontWeight: 'bold', color: '#1e293b', marginBottom: 24, textAlign: 'center' },
   infoRow: { flexDirection: 'row', marginBottom: 16, alignItems: 'center' },
-  label: { fontSize: 16, fontWeight: '600', color: '#64748b', minWidth: 80 },
+  label: { fontSize: 16, fontWeight: '600', color: '#64748b', minWidth: 100 },
   info: { fontSize: 16, color: '#1e293b', flex: 1 },
   status: { fontSize: 16, fontWeight: 'bold' },
   section: { marginTop: 24 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#1e293b', marginBottom: 16 },
-  message: { 
-    backgroundColor: '#f1f5f9', 
-    padding: 16, 
-    borderRadius: 12, 
-    marginBottom: 12 
-  },
+  message: { backgroundColor: '#f1f5f9', padding: 16, borderRadius: 12, marginBottom: 12 },
   messageText: { fontSize: 16, color: '#1e293b' },
   createSummaryButton: {
     backgroundColor: '#10B981',

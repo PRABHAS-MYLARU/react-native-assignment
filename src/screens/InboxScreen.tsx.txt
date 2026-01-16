@@ -1,19 +1,16 @@
 import React from 'react';
 import { FlatList, View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import data from '../data.json';
+import { useConversations } from '../hooks/useConversations';
 
 type RootStackParamList = {
   Inbox: undefined;
-  Detail: { conversation: any };
-  Summary: { conversation: any };
+  Detail: { conversationId: string };
 };
 
-type InboxScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Inbox'>;
-
-interface Props {
-  navigation: InboxScreenNavigationProp;
-}
+type Props = {
+  navigation: StackNavigationProp<RootStackParamList, 'Inbox'>;
+};
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -25,11 +22,14 @@ const getStatusColor = (status: string) => {
 };
 
 export default function InboxScreen({ navigation }: Props) {
+  const conversations = useConversations();
+
+  const handlePress = (conversationId: string) => {
+    navigation.navigate('Detail', { conversationId });
+  };
+
   const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity 
-      style={styles.item}
-      onPress={() => navigation.navigate('Detail', { conversation: item })}
-    >
+    <TouchableOpacity style={styles.item} onPress={() => handlePress(item.id)}>
       <View style={styles.content}>
         <Text style={styles.patientName}>{item.patientName}</Text>
         <Text style={styles.reason}>{item.reason}</Text>
@@ -44,7 +44,7 @@ export default function InboxScreen({ navigation }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList 
-        data={data} 
+        data={conversations} 
         renderItem={renderItem} 
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}

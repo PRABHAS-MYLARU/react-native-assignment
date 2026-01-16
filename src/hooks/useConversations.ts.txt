@@ -1,0 +1,25 @@
+import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import data from '../data.json';
+
+export const useConversations = () => {
+  const [conversations, setConversations] = useState<any[]>(data);
+
+  useEffect(() => {
+    const loadConversations = async () => {
+      try {
+        const saved = await AsyncStorage.getItem('conversations');
+        if (saved) {
+          setConversations(JSON.parse(saved));
+        }
+      } catch (error) {
+        console.log('Failed to load conversations:', error);
+      }
+    };
+    loadConversations();
+  }, []);
+
+  return conversations;
+};
+
+

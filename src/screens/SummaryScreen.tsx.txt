@@ -2,42 +2,59 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Picker, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 type RootStackParamList = {
-  Summary: { conversation: any };
+  Summary: { conversationId: string };
 };
 
-type SummaryScreenRouteProp = RouteProp<RootStackParamList, 'Summary'>;
-type SummaryScreenNavigationProp = StackNavigationProp<RootStackParamList>;
+type Props = {
+  route: RouteProp<RootStackParamList, 'Summary'>;
+};
 
-export default function SummaryScreen() {
-  const route = useRoute();
-  const navigation = useNavigation<SummaryScreenNavigationProp>();
-  const { conversation } = route.params as { conversation: any };
-  
+export default function SummaryScreen({ route }: Props) {
+  const navigation = useNavigation();
+  const { conversationId } = route.params;
   const [notes, setNotes] = useState('');
-  const [outcome, setOutcome] = useState('Completed');
+  const [outcome, setOutcome] = useState('Scheduled');
+  const [nextActionDate, setNextActionDate] = useState('');
   const [loading, setLoading] = useState(false);
 
   const saveSummary = async () => {
+    if (!notes.trim()) {
+      Alert.alert('Error', 'Please add clinical notes');
+      return;
+    }
+
     setLoading(true);
     try {
+      // Save summary
       const summaries = await AsyncStorage.getItem('summaries');
       const summaryList = summaries ? JSON.parse(summaries) : [];
       
       const summary = {
-        id: conversation.id,
-        patientName: conversation.patientName,
+        id: conversationId,
         notes,
         outcome,
+        nextActionDate: nextActionDate || 'None',
         date: new Date().toISOString(),
       };
       
       summaryList.push(summary);
       await AsyncStorage.setItem('summaries', JSON.stringify(summaryList));
+
+      // Update conversation status to "Done"
+      const conversationsData = await AsyncStorage.getItem('conversations');
+      const conversations = conversationsData ? JSON.parse(conversationsData) : require('../data.json');
       
-      Alert.alert('Success', 'Summary saved successfully!');
+      const updatedConversations = conversations.map((conv: any) =>
+        conv.id === conversationId 
+          ? { ...conv, status: 'Done' }
+          : conv
+      );
+      
+      await AsyncStorage.setItem('conversations', JSON.stringify(updatedConversations));
+
+      Alert.alert('✅ Success', 'Summary saved and status updated to Done!');
       navigation.goBack();
     } catch (error) {
       Alert.alert('Error', 'Failed to save summary');
@@ -49,32 +66,42 @@ export default function SummaryScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.patientName}>{conversation.patientName}</Text>
+        <Text style={styles.title}>Create Call Summary</Text>
         
         <View style={styles.field}>
-          <Text style={styles.label}>Clinical Notes:</Text>
+          <Text style={styles.label}>📝 Clinical Notes:</Text>
           <TextInput
             style={styles.textInput}
             multiline
             numberOfLines={4}
-            placeholder="Enter clinical notes..."
+            placeholder="Enter clinical observations..."
             value={notes}
             onChangeText={setNotes}
           />
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.label}>Outcome:</Text>
+          <Text style={styles.label}>📊 Outcome:</Text>
           <Picker
             selectedValue={outcome}
             style={styles.picker}
-            onValueChange={(itemValue) => setOutcome(itemValue)}
+            onValueChange={(itemValue) => setOutcome(itemValue as string)}
           >
-            <Picker.Item label="Completed" value="Completed" />
-            <Picker.Item label="Follow-up Required" value="Follow-up" />
-            <Picker.Item label="Referred" value="Referred" />
-            <Picker.Item label="Cancelled" value="Cancelled" />
+            <Picker.Item label="Scheduled" value="Scheduled" />
+            <Picker.Item label="Left Voicemail" value="Left Voicemail" />
+            <Picker.Item label="Needs Follow-up" value="Needs Follow-up" />
+            <Picker.Item label="Not Interested" value="Not Interested" />
           </Picker>
+        </View>
+
+        <View style={styles.field}>
+          <Text style={styles.label}>📅 Next Action Date:</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="YYYY-MM-DD (e.g., 2026-01-20)"
+            value={nextActionDate}
+            onChangeText={setNextActionDate}
+          />
         </View>
 
         <TouchableOpacity 
@@ -83,7 +110,7 @@ export default function SummaryScreen() {
           disabled={loading}
         >
           <Text style={styles.saveButtonText}>
-            {loading ? 'Saving...' : '💾 Save Summary'}
+            {loading ? '💾 Saving...' : '💾 Save Summary & Mark Done'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -104,7 +131,7 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 4,
   },
-  patientName: { fontSize: 24, fontWeight: 'bold', color: '#1e293b', marginBottom: 24, textAlign: 'center' },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#1e293b', marginBottom: 24, textAlign: 'center' },
   field: { marginBottom: 20 },
   label: { fontSize: 16, fontWeight: '600', color: '#64748b', marginBottom: 8 },
   textInput: {
@@ -116,16 +143,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8fafc',
     textAlignVertical: 'top'
   },
-  picker: { 
-    backgroundColor: '#f8fafc', 
-    borderRadius: 12 
-  },
+  picker: { backgroundColor: '#f8fafc', borderRadius: 12 },
   saveButton: {
     backgroundColor: '#10B981',
     padding: 20,
     borderRadius: 16,
     alignItems: 'center',
-    marginTop: 20
+    marginTop: 10
   },
   saveButtonDisabled: { backgroundColor: '#94a3b8' },
   saveButtonText: { color: 'white', fontSize: 18, fontWeight: 'bold' }

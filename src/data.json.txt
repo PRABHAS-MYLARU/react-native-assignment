@@ -1,42 +1,12 @@
 [
-  {
-    "id": "1",
-    "patientName": "John Doe",
-    "phone": "+91-9876543210",
-    "reason": "Teeth cleaning appointment",
-    "timestamp": "Jan 15, 10:30 AM",
-    "status": "New",
-    "messages": ["Hi, I need to book teeth cleaning."],
-    "createdDate": "2026-01-15T10:00:00Z"
-  },
-  {
-    "id": "2",
-    "patientName": "Jane Smith",
-    "phone": "+91-9876543211",
-    "reason": "Root canal pain",
-    "timestamp": "Jan 16, 9:15 AM",
-    "status": "New",
-    "messages": ["Severe tooth pain, urgent help needed"],
-    "createdDate": "2026-01-16T09:00:00Z"
-  },
-  {
-    "id": "3",
-    "patientName": "Raj Patel",
-    "phone": "+91-9876543212",
-    "reason": "Braces consultation",
-    "timestamp": "Jan 14, 2:30 PM",
-    "status": "In Progress",
-    "messages": ["Interested in braces treatment"],
-    "createdDate": "2026-01-14T14:00:00Z"
-  },
-  {
-    "id": "4",
-    "patientName": "Priya Sharma",
-    "phone": "+91-9876543213",
-    "reason": "Regular checkup",
-    "timestamp": "Jan 13, 11:00 AM",
-    "status": "Done",
-    "messages": ["Routine checkup completed"],
-    "createdDate": "2026-01-13T11:00:00Z"
-  }
+  {"id":"1","patientName":"John Doe","phone":"+91-9876543210","reason":"Teeth cleaning","timestamp":"Jan 16, 9:30 AM","status":"New","messages":["Need teeth cleaning appointment"],"createdDate":"2026-01-16T09:00:00Z"},
+  {"id":"2","patientName":"Jane Smith","phone":"+91-9876543211","reason":"Root canal pain","timestamp":"Jan 16, 10:15 AM","status":"New","messages":["Severe tooth pain, urgent"],"createdDate":"2026-01-16T10:00:00Z"},
+  {"id":"3","patientName":"Raj Patel","phone":"+91-9876543212","reason":"Braces consult","timestamp":"Jan 15, 2:30 PM","status":"In Progress","messages":["Braces treatment inquiry"],"createdDate":"2026-01-15T14:00:00Z"},
+  {"id":"4","patientName":"Priya Sharma","phone":"+91-9876543213","reason":"Regular checkup","timestamp":"Jan 14, 11:00 AM","status":"Done","messages":["Routine checkup done"],"createdDate":"2026-01-14T11:00:00Z"},
+  {"id":"5","patientName":"Amit Kumar","phone":"+91-9876543214","reason":"Tooth extraction","timestamp":"Jan 16, 1:45 PM","status":"New","messages":["Need extraction consultation"],"createdDate":"2026-01-16T13:00:00Z"},
+  {"id":"6","patientName":"Sita Devi","phone":"+91-9876543215","reason":"Filling needed","timestamp":"Jan 13, 3:20 PM","status":"New","messages":["Cavity filling required"],"createdDate":"2026-01-13T15:00:00Z"},
+  {"id":"7","patientName":"Ravi Gupta","phone":"+91-9876543216","reason":"Whitening","timestamp":"Jan 12, 4:10 PM","status":"In Progress","messages":["Teeth whitening inquiry"],"createdDate":"2026-01-12T16:00:00Z"},
+  {"id":"8","patientName":"Neha Reddy","phone":"+91-9876543217","reason":"Wisdom tooth","timestamp":"Jan 15, 5:30 PM","status":"New","messages":["Wisdom tooth pain"],"createdDate":"2026-01-15T17:00:00Z"},
+  {"id":"9","patientName":"Vikram Singh","phone":"+91-9876543218","reason":"Dental x-ray","timestamp":"Jan 14, 10:45 AM","status":"Done","messages":["X-ray results ready"],"createdDate":"2026-01-14T10:00:00Z"},
+  {"id":"10","patientName":"Lakshmi Nair","phone":"+91-9876543219","reason":"Emergency","timestamp":"Jan 16, 8:20 AM","status":"New","messages":["Emergency appointment needed"],"createdDate":"2026-01-16T08:00:00Z"}
 ]
