@@ -1,0 +1,132 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, Picker, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type RootStackParamList = {
+  Summary: { conversation: any };
+};
+
+type SummaryScreenRouteProp = RouteProp<RootStackParamList, 'Summary'>;
+type SummaryScreenNavigationProp = StackNavigationProp<RootStackParamList>;
+
+export default function SummaryScreen() {
+  const route = useRoute();
+  const navigation = useNavigation<SummaryScreenNavigationProp>();
+  const { conversation } = route.params as { conversation: any };
+  
+  const [notes, setNotes] = useState('');
+  const [outcome, setOutcome] = useState('Completed');
+  const [loading, setLoading] = useState(false);
+
+  const saveSummary = async () => {
+    setLoading(true);
+    try {
+      const summaries = await AsyncStorage.getItem('summaries');
+      const summaryList = summaries ? JSON.parse(summaries) : [];
+      
+      const summary = {
+        id: conversation.id,
+        patientName: conversation.patientName,
+        notes,
+        outcome,
+        date: new Date().toISOString(),
+      };
+      
+      summaryList.push(summary);
+      await AsyncStorage.setItem('summaries', JSON.stringify(summaryList));
+      
+      Alert.alert('Success', 'Summary saved successfully!');
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save summary');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.card}>
+        <Text style={styles.patientName}>{conversation.patientName}</Text>
+        
+        <View style={styles.field}>
+          <Text style={styles.label}>Clinical Notes:</Text>
+          <TextInput
+            style={styles.textInput}
+            multiline
+            numberOfLines={4}
+            placeholder="Enter clinical notes..."
+            value={notes}
+            onChangeText={setNotes}
+          />
+        </View>
+
+        <View style={styles.field}>
+          <Text style={styles.label}>Outcome:</Text>
+          <Picker
+            selectedValue={outcome}
+            style={styles.picker}
+            onValueChange={(itemValue) => setOutcome(itemValue)}
+          >
+            <Picker.Item label="Completed" value="Completed" />
+            <Picker.Item label="Follow-up Required" value="Follow-up" />
+            <Picker.Item label="Referred" value="Referred" />
+            <Picker.Item label="Cancelled" value="Cancelled" />
+          </Picker>
+        </View>
+
+        <TouchableOpacity 
+          style={[styles.saveButton, loading && styles.saveButtonDisabled]}
+          onPress={saveSummary}
+          disabled={loading}
+        >
+          <Text style={styles.saveButtonText}>
+            {loading ? 'Saving...' : '💾 Save Summary'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#f8fafc' },
+  card: {
+    backgroundColor: 'white',
+    margin: 20,
+    padding: 24,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  patientName: { fontSize: 24, fontWeight: 'bold', color: '#1e293b', marginBottom: 24, textAlign: 'center' },
+  field: { marginBottom: 20 },
+  label: { fontSize: 16, fontWeight: '600', color: '#64748b', marginBottom: 8 },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    backgroundColor: '#f8fafc',
+    textAlignVertical: 'top'
+  },
+  picker: { 
+    backgroundColor: '#f8fafc', 
+    borderRadius: 12 
+  },
+  saveButton: {
+    backgroundColor: '#10B981',
+    padding: 20,
+    borderRadius: 16,
+    alignItems: 'center',
+    marginTop: 20
+  },
+  saveButtonDisabled: { backgroundColor: '#94a3b8' },
+  saveButtonText: { color: 'white', fontSize: 18, fontWeight: 'bold' }
+});
